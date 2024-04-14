@@ -32,11 +32,29 @@ class Module:
     def train(self) -> None:
         "Set the mode of this module and all descendent modules to `train`."
         # TODO: Implement for Task 0.4.
+        def update(cur: Module) -> None:
+            # 先更新自己的标记,之后遍历子模块更新
+            cur.training = True
+            for child in cur.modules():
+                update(child)
+            return
+        # 递归调用update
+        update(self)
+        return
         raise NotImplementedError('Need to implement for Task 0.4')
 
     def eval(self) -> None:
         "Set the mode of this module and all descendent modules to `eval`."
         # TODO: Implement for Task 0.4.
+        def update(cur: Module) -> None:
+            # 先更新自己的标记,之后遍历子模块更新
+            cur.training = False
+            for child in cur.modules():
+                update(child)
+            return
+        # 递归调用update
+        update(self)
+        return
         raise NotImplementedError('Need to implement for Task 0.4')
 
     def named_parameters(self) -> Sequence[Tuple[str, Parameter]]:
@@ -48,11 +66,27 @@ class Module:
             The name and `Parameter` of each ancestor parameter.
         """
         # TODO: Implement for Task 0.4.
+        # 这里的res相当于一个全局变量
+        res = []
+        def helper(name, node):
+            prefix = name + "." if name else ""
+            # 自己本来的参数,这里的k是参数名
+            for k, v in node._parameters.items():
+                res.append((prefix + k, v))
+            # 遍历子模块获取它们的参数,这里的k是子模块名
+            for k, v in node._modules.items():
+                helper(prefix + k, v)
+        helper("", self)
+        return res
         raise NotImplementedError('Need to implement for Task 0.4')
 
     def parameters(self) -> Sequence[Parameter]:
         "Enumerate over all the parameters of this module and its descendents."
         # TODO: Implement for Task 0.4.
+        res = []
+        for t in self.named_parameters():
+            res.append(t[1])
+        return res
         raise NotImplementedError('Need to implement for Task 0.4')
 
     def add_parameter(self, k: str, v: Any) -> Parameter:

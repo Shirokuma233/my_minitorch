@@ -105,6 +105,7 @@ def test_one_derivative(
     fn: Tuple[str, Callable[[float], float], Callable[[Scalar], Scalar]], t1: Scalar
 ) -> None:
     name, _, scalar_fn = fn
+    print(scalar_fn)
     derivative_check(scalar_fn, t1)
 
 
