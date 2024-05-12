@@ -44,6 +44,10 @@ def index_to_position(index: Index, strides: Strides) -> int:
     """
 
     # TODO: Implement for Task 2.1.
+    res = 0
+    for i, stride in zip(index, strides):
+        res += i * stride
+    return res
     raise NotImplementedError('Need to implement for Task 2.1')
 
 
@@ -61,6 +65,12 @@ def to_index(ordinal: int, shape: Shape, out_index: OutIndex) -> None:
 
     """
     # TODO: Implement for Task 2.1.
+    ordinal = ordinal + 0
+    for dim in range(len(shape) - 1, -1, -1):
+        size = shape[dim]
+        out_index[dim] = ordinal % size
+        ordinal = ordinal // size
+    return
     raise NotImplementedError('Need to implement for Task 2.1')
 
 
@@ -84,6 +94,10 @@ def broadcast_index(
         None
     """
     # TODO: Implement for Task 2.2.
+    for i in range(len(shape)):
+        offset = i + len(big_shape) - len(shape)
+        out_index[i] = big_index[offset] if shape[i] != 1 else 0
+    return
     raise NotImplementedError('Need to implement for Task 2.2')
 
 
@@ -102,6 +116,22 @@ def shape_broadcast(shape1: UserShape, shape2: UserShape) -> UserShape:
         IndexingError : if cannot broadcast
     """
     # TODO: Implement for Task 2.2.
+    max_dim = max(len(shape1), len(shape2))
+
+    print(shape1, shape2)
+
+    new_shape1 = [1] * (max_dim - len(shape1)) + list(shape1)
+    new_shape2 = [1] * (max_dim - len(shape2)) + list(shape2)
+
+    broadcast_shape = []
+    for dim1, dim2 in zip(new_shape1, new_shape2):
+        if dim1 == dim2 or dim1 == 1 or dim2 == 1:
+            broadcast_shape.append(max(dim1, dim2))
+        else:
+            raise IndexingError("Cannot broadcast shapdes.")
+    print(broadcast_shape)
+    return tuple(broadcast_shape)
+
     raise NotImplementedError('Need to implement for Task 2.2')
 
 
@@ -228,6 +258,7 @@ class TensorData:
         ), f"Must give a position to each dimension. Shape: {self.shape} Order: {order}"
 
         # TODO: Implement for Task 2.1.
+        return TensorData(self._storage, tuple([self.shape[i] for i in order]), tuple([self.strides[i] for i in order]))
         raise NotImplementedError('Need to implement for Task 2.1')
 
     def to_string(self) -> str:

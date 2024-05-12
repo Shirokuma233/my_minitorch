@@ -106,11 +106,12 @@ class ScalarTrain:
             # Logging
             if epoch % 10 == 0 or epoch == max_epochs:
                 log_fn(epoch, total_loss, correct, losses)
+                print("rate", correct / data.N)
 
 
 if __name__ == "__main__":
     PTS = 50
     HIDDEN = 2
-    RATE = 0.5
+    RATE = 0.1
     data = minitorch.datasets["Simple"](PTS)
     ScalarTrain(HIDDEN).train(data, RATE)

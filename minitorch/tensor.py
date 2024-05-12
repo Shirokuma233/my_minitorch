@@ -372,3 +372,7 @@ class Tensor:
         Reset the derivative on this variable.
         """
         self.grad = None
+
+    @property
+    def tensor(self):
+        return self._tensor

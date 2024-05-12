@@ -81,6 +81,7 @@ def _tensor_conv1d(
     s2 = weight_strides
 
     # TODO: Implement for Task 4.1.
+
     raise NotImplementedError('Need to implement for Task 4.1')
 
 
@@ -207,6 +208,38 @@ def _tensor_conv2d(
     s20, s21, s22, s23 = s2[0], s2[1], s2[2], s2[3]
 
     # TODO: Implement for Task 4.2.
+    # Iterate over the output tensor
+    for b in range(batch):
+        for oc in range(out_channels):
+            for oh in range(height):
+                for ow in range(width):
+                    # Compute the output index and stride
+                    out_index = b * out_strides[0] + oc * out_strides[1] + oh * out_strides[2] + ow * out_strides[3]
+                    out_stride = out_strides[3]
+
+                    # Compute the input and weight indices
+                    if reverse:
+                        ih_start = oh
+                        ih_end = oh + kh
+                        iw_start = ow
+                        iw_end = ow + kw
+                        w_index = oc * s20
+                    else:
+                        ih_start = oh - kh + 1
+                        ih_end = oh + 1
+                        iw_start = ow - kw + 1
+                        iw_end = ow + 1
+                        w_index = oc * s20 + (kh - 1) * s22 + (kw - 1) * s23
+
+                    # Perform the convolution
+                    total = 0.0
+                    for ic in range(in_channels):
+                        for ih in range(ih_start, ih_end):
+                            for iw in range(iw_start, iw_end):
+                                input_index = b * s10 + ic * s11 + ih * s12 + iw * s13
+                                weight_index = input_index + w_index
+                                total += input[input_index] * weight[weight_index]
+                    out[out_index] = total
     raise NotImplementedError('Need to implement for Task 4.2')
 
 
